@@ -43,4 +43,84 @@ We saw an example of how to create a weak learner by applying a regularisation r
 
 Now that we understand what weak learners are, let’s see how they are combined to form an ensemble.
 
- 
+## AdaBoost Algorithm
+We will learn how the AdaBoost algorithm improves the performance by boosting the probability of some points while suppressing the probability of others. AdaBoost stands for Adaptive Boosting, was developed by Schapire and Freund, who later on won the 2003 Godel Prize for their work.
+
+Let us consider a binary classification problem, wherein learning algorithm will produce a model given a training set and distribution.
+
+![title](img/adaboost.JPG)
+
+In above formula D is the distribution, T is the training set, p is the probability of data points.
+So we start with a uniform distribution, so with each iteration the points which are continuously not handled by the learning algorithm will be assigned a high probablity, so that in subsequent iterations those points are considered and finally we will produce a ensemble of such models which will in turn have high accuracy.
+
+We see here that the with each new model, the distribution of the data changes. By distribution, we mean that the weight assigned to each data point changes for the calculation of objective function that needs to be minimized.
+
+![title](img/objective-function.JPG)
+
+In other words, objective function is the expected value of the loss which transforms to the above-mentioned objective function when the distribution is not uniform. 
+
+**Question**
+
+![title](img/question.JPG)
+
+![title](img/answer.JPG)
+
+Let's now look at the questions we need to answer to create an AdaBoost learning algorithm.
+So, there are essentially two steps involved in the AdaBoost algorithm:
+1. Modify the current distribution to create a new distribution to generate a new model.
+2. Calculation of the weights given to each of the models to get the final ensemble.
+
+![title](img/steps_adaboost.JPG)
+
+![title](img/summary.JPG)
+
+**Additional Reading:** <br/>
+A Short Introduction to Boosting' by Freund and Schapire (http://www.site.uottawa.ca/~stan/csi5387/boost-tut-ppr.pdf)
+
+### AdaBoost Distribution and Parameter Calculation
+We saw that the two basic steps involved in the AdaBoost algorithm are:
+1. Modify the current distribution to create a new distribution to generate a new model
+2. Calculation of the weights given to each of the models to get the final ensemble
+
+We will explore the first step of the AdaBoost process, i.e. how the distribution changes after every iteration and the intuition behind it.
+
+The probability assigned to different data points in the AdaBoost algorithm is as follows:
+
+![title](img/adaboost1.JPG)
+
+![title](img/adaboost-summary.JPG)
+
+Now, let's dive into the second step of the AdaBoost process in which we look at how we assign weights to the different models we create at each step.
+
+![title](img/alpha.JPG)
+
+Since our algorithm is a weak learner, which is capable of producing a model which is marginally better than the random guess. So probablity of error by the model which this algorithm produces must be less than 1/2. So 1 - epsilon_t will be more than 1/2 and epsilon_t will be less than  1/2.
+
+![title](img/epsilon.JPG)
+
+![title](img/adaboost2.JPG)
+
+![title](img/adaboost-summary1.JPG)
+
+**Practical advice**: Before you apply the AdaBoost algorithm, you should remove the Outliers. Since AdaBoost tends to boosts up the probabilities of misclassified points and there is a high chance that outliers will be misclassified, it will keep increasing the probability associated with the outliers and make the progress difficult. Some of the ways to remove outliers are:
+* Boxplots
+* Cook's distance
+* Z-score.
+
+**Additional Reading**
+The AdaBoost algorithm uses the exponential loss function, 
+
+![title](img/loss-function1.JPG)
+
+ to develop the expressions for the probability distribution and the weights assigned to the tree. You can go through the link mentioned for the derivation. (https://mbernste.github.io/files/notes/AdaBoost.pdf)
+
+ ### AdaBoost Lab
+ The objective of this segment is to learn how to implement the AdaBoost algorithm in python. In this exercise, you have to go through the notebook attached to the page and answer the questions that follow.
+
+ Download and implement the code in the following notebook to get an understanding of the AdaBoostClassifier and answer the following questions. Refer to the documentation (https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html#sklearn.ensemble.AdaBoostClassifier) of AdaBoostClassifier if needed
+
+ You can try changing the number of trees in 'estimators = list(range(1, 50, 3))' to 'estimators = list(range(1, 200, 3))' and see if the acuracy increases. 
+
+ Note that we have used 'accuracy_score' as the evaluation metric here. We can use other evaluation metrics(https://scikit-learn.org/stable/modules/model_evaluation.html) also like 'roc_auc_curve'.
+
+ [AdaBoost Lab](dataset/Adaboost_cancer_prediction.ipynb)
