@@ -124,3 +124,131 @@ The AdaBoost algorithm uses the exponential loss function,
  Note that we have used 'accuracy_score' as the evaluation metric here. We can use other evaluation metrics(https://scikit-learn.org/stable/modules/model_evaluation.html) also like 'roc_auc_curve'.
 
  [AdaBoost Lab](dataset/Adaboost_cancer_prediction.ipynb)
+
+ ## Gradient Boosting
+
+ ### Introduction
+ Until now, you have learned the original boosting algorithm, AdaBoost. 
+ 
+ In this session, we will learn another popular boosting algorithm - **Gradient Boosting** and a modification of Gradient Boosting called **XGBoost** which is widely used in the industry. We will also briefly discuss some of the more advanced algorithms recently introduced
+ 
+ Towards the end, we will go through the implementation of the different algorithms on a Kaggle Dataset in Python.
+
+ ### Understanding Gradient Boosting
+ In this session, we will go through the algorithm of gradient boosting in a regression setting. Let's start with understanding the broad idea of gradient boosting.
+
+ ![title](img/gradient_boosting.JPG)
+
+ ![title](img/gradient_boosting1.JPG)
+
+ ![title](img/gradient_boosting2.png)
+
+ ![title](img/gradient_boosting3.JPG)
+
+ Now that you have got a brief understanding of how gradient boosting works, let's study what the gradient in gradient boosting is.
+
+ ### Gradient in Gradient Boosting
+ Let's now look at following which explains how modelling on the residuals helps the model improve its predictive power, i.e. reduce the error.
+
+ ![title](img/gradient_boosting4.JPG)
+
+ We got an intuition of how the gradient boosting process helps in reducing the error with each iteration. To summarise, the gradient boosting algorithm has two steps at each iteration:
+ 1. Find the residual and fit a new model on the residual
+ 2. Add the new model to the older model and continue the next iteration
+
+Let’s now see how this can be seen as a **gradient descent problem**. Let’s now see how this can be seen as a gradient descent problem.
+
+![title](img/gradient_boosting5.JPG)
+
+We see that the negative gradient of the square loss function gives the residue. So the strategy of closing in on the residues at each step can be seen as taking a **step towards the negative gradient of the loss function**. We can observe here that gradient descent helps in generalising the boosting process.
+
+Please **note** that this explanation and the aforementioned process of closing in on the residues is only valid for square error loss function.
+
+### Gradient Boosting Algorithm
+Let's digress from the regression setting for a bit, and look at a more formal setting of Gradient Boosting and the nomenclature that is used industry-wide.
+
+![title](img/gradient_boosting6.png)
+
+![title](img/gradient_boosting7.JPG)
+
+![title](img/gradient_boosting-min.JPG)
+
+![title](img/gradient_boosting-min1.JPG)
+
+![title](img/gradient_boosting-min2.JPG)
+
+![title](img/gradient_boosting-min3.JPG)
+
+### XGBoost
+XGBoost was first developed by Taiqi Chen and became famous in solving the Higgs Boson problem. XG Boost is an abbreviation for **extreme gradient boosting**.
+
+Let us first recall how regression tree works. Each leaf of a regression tree predicts a numerical value y for a data point x, i.e. when you push a data point x through the tree, it ends up in one of the leaves and takes the value corresponding to that leaf.
+
+![title](img/xgboost.png)
+
+XGBoost stands for Extreme Gradient Boosting which involves Gradient Boosting on shallow decision trees. Like before, we add a shallow decision tree to a previous model to create a new model.
+
+We now need to figure out how to generate this incremental shallow decision tree. XGBoost algorithm is a modification of the Gradient Boosting tree algorithm. Hence, to have a better understanding of the XGBoost process, let's go through the following gradient tree boosting algorithm. This Gradient Boosting tree algorithm is the same as the Gradient Boosting algorithm we discussed in the pervious just that the model which we fit at each iteration is a decision tree. Hence, there is a change in steps 3 and 4. Let's go through what those are:
+
+![title](img/xgboost.JPG)
+
+![title](img/xgboost1.JPG)
+
+### Understanding XGBoost
+Now that you have understood the Gradient Boosting tree algorithm, let's move to XGBoost. The upcoming text discusses the maths behind the XGBoost. It is expected that you write the equations to have a better understanding.
+
+Extreme Gradient Boosting (XGBoost) is similar to gradient boosting framework but more efficient and advanced implementation of Gradient Boosting algorithm. XGBoost, short for “Extreme Gradient Boosting”, was introduced by Chen in 2014 and since it’s introduction, it has become one of the most popular algorithms in Machine Learning realm. Due to its robust accuracy, it has been widely used in machine learning competitions as well.
+
+Both XGBoost and GBM follow the principle of gradient boosted trees, but XGBoost uses a more regularised model formulation to control overfitting, which gives it better performance, which is why it’s also known as ‘regularised boosting‘ technique.
+
+### The mathematics behind the XGBoost model:
+In an ideal machine learning model, the objective function is a sum of Loss function “L” and regularization “Ω”. Loss function controls the predictive power of the algorithm and regularization controls its simplicity
+
+Objective Function : Training Loss + Regularization
+
+The above Gradient Boosting Tree algorithm has the objective function as only the Training Loss while the XGBoost objective function constitutes of loss function evaluated over, all predictions and sum of regularization term for all predictors ('T' trees).
+
+![title](img/xgboost2.JPG)
+
+![title](img/xgboost3.JPG)
+
+![title](img/mse.JPG)
+
+### Taylor series approximation of the loss
+The above described objective function can be approximated using Taylor series expansion and hence can be solved
+
+![title](img/tailor.JPG)
+
+![title](img/tailor1.JPG)
+
+![title](img/tailor2.JPG)
+
+### XGBoost Regularisation
+![title](img/xgboost-regularisation.JPG)
+
+**Hyperparameters - Learning Rate, Number of Trees and Subsampling**
+
+![title](img/xgboost-regularisation1.JPG)
+
+**Subsampling** is training the model in each iteration on a fraction of data (similar to how random forests build each tree).  A typical value of subsampling is 0.5 while it ranges from 0 to 1. In random forests, subsampling is critical to ensure diversity among the trees, since otherwise, all the trees will start with the same training data and therefore look similar. This is not a big problem in boosting since each tree is any way built on the residual and gets a significantly different objective function than the previous one. 
+
+Apart from the above-mentioned hyperparameters, there are other parameters of decision trees like the depth of the tree, the minimum number of samples required for split etc.
+
+Gradient Boosting has a tendency to overfit as we keep increasing the number of trees. We can keep a check on overfitting by consistently checking accuracy on validation data. This issue is automatically addressed in XGBoost as stated earlier.
+
+#### Why is XGBoost so good?
+1. Parallel Computing: when you run xgboost, by default, it would use all the cores of your laptop/machine enabling its capacity to do parallel computation
+2. Regularization: The biggest advantage of xgboost is that it uses regularization and controls the overfitting and simplicity of the model which gives it better performance.
+3. Enabled Cross Validation: XGBoost is enabled with internal Cross Validation function
+4. Missing Values: XGBoost is designed to handle missing values internally. The missing values are treated in such a manner that if there exists any trend in missing values, it is captured by the model.
+5. Flexibility: XGBoost id not just limited to regression, classification, and ranking problems, it supports user-defined objective functions as well. Furthermore, it supports user-defined evaluation metrics as well.
+
+### Kaggle Practice Exercise
+This is a practice session in which we will solve the Kaggle competition TalkingData AdTracking Fraud Detection Challenge(https://www.kaggle.com/c/talkingdata-adtracking-fraud-detection). The training set, as well as the solution, is provided in here. Please implement the code and try tuning the different parameters to achieve a better result, but first, let's understand why it is beneficial to participate in Kaggle competitions.
+
+[Python Notebook](dataset/Boosting+-+TalkingData+Click+Fraud+.ipynb)
+
+[Training Data](dataset/train_sample.csv)
+
+#### Additional References
+Installation Guide: XGBoost (https://xgboost.readthedocs.io/en/latest/build.html)
